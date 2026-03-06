@@ -62,12 +62,13 @@ const Checkout = () => {
     };
 
     useEffect(() => {
-        if (items.length === 0) {
+        // Only redirect to cart if it's empty AND we haven't started checkout steps/payment
+        if (items.length === 0 && step === 1 && !paymentLoading) {
             navigate("/cart");
         }
-    }, [items.length, navigate]);
+    }, [items.length, navigate, step, paymentLoading]);
 
-    if (items.length === 0) {
+    if (items.length === 0 && step === 1 && !paymentLoading) {
         return null;
     }
 
