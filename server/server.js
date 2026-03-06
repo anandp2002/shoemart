@@ -59,7 +59,22 @@ const allowedOrigins = [
 
 app.use(
     cors({
-        origin: allowedOrigins,
+        origin: function (origin, callback) {
+            // Allow requests with no origin (like mobile apps/postman)
+            if (!origin) return callback(null, true);
+
+            // Check if it's one of our allowed origins (ignoring trailing slashes)
+            const isAllowed = allowedOrigins.some(allowed =>
+                origin === allowed || origin === allowed + '/' || allowed === origin + '/'
+            );
+
+            if (isAllowed) {
+                // IMPORTANT: Reflect the EXACT origin requested to prevent caching mismatches on Render/Vercel
+                callback(null, origin);
+            } else {
+                callback(new Error('CORS policy violation'));
+            }
+        },
         credentials: true,
     })
 );
