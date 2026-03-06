@@ -30,11 +30,20 @@ export const handleWebhook = asyncHandler(async (req, res) => {
             case 'payment_intent.succeeded':
                 console.log('Payment succeeded:', event.data.object.id);
                 break;
+            case 'payment_intent.created':
+                console.info('Payment intent created:', event.data.object.id);
+                break;
+            case 'charge.succeeded':
+                console.info('Charge succeeded:', event.data.object.id);
+                break;
+            case 'charge.updated':
+                console.info('Charge updated:', event.data.object.id);
+                break;
             case 'payment_intent.payment_failed':
-                console.log('Payment failed:', event.data.object.id);
+                console.warn('Payment failed:', event.data.object.id);
                 break;
             default:
-                console.log('Unhandled event type:', event.type);
+                console.log('Skipping unhandled event type:', event.type);
         }
 
         res.json({ received: true });
