@@ -41,20 +41,20 @@ const CheckoutForm = ({ grandTotal, address, onBack }) => {
         });
 
         if (error) {
-            toast.error(error.message);
             setIsProcessing(false);
+            navigate('/payment-error', { state: { error: error.message } });
         } else if (paymentIntent && paymentIntent.status === 'succeeded') {
             try {
-                await dispatch(createOrder({
+                const newOrder = await dispatch(createOrder({
                     shippingAddress: address,
                     paymentIntentId: paymentIntent.id
                 })).unwrap();
+
                 dispatch(clearCartState());
-                toast.success("Payment successful! Order placed.");
-                navigate('/orders');
+                navigate('/success', { state: { orderDetails: newOrder.order || newOrder } });
             } catch (err) {
-                toast.error(err || "Failed to create order");
                 setIsProcessing(false);
+                navigate('/payment-error', { state: { error: err || "Failed to finalize order on our servers." } });
             }
         } else {
             setIsProcessing(false);

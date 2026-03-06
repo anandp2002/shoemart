@@ -167,8 +167,27 @@ const Navbar = () => {
                     <Link to="/shop" onClick={() => dispatch(toggleMobileMenu())} className="block px-4 py-3 text-neutral-900 font-medium hover:bg-neutral-50 rounded-xl">Shop All</Link>
                     <Link to="/shop?category=men" onClick={() => dispatch(toggleMobileMenu())} className="block px-4 py-3 text-neutral-900 font-medium hover:bg-neutral-50 rounded-xl">Men</Link>
                     <Link to="/shop?category=women" onClick={() => dispatch(toggleMobileMenu())} className="block px-4 py-3 text-neutral-900 font-medium hover:bg-neutral-50 rounded-xl">Women</Link>
-                    {!isAuthenticated && (
+                    {!isAuthenticated ? (
                         <Link to="/login" onClick={() => dispatch(toggleMobileMenu())} className="block px-4 py-3 text-center bg-amber-500 text-neutral-900 font-medium rounded-xl mt-4">Login to Account</Link>
+                    ) : (
+                        <div className="mt-4 pt-4 border-t border-neutral-100">
+                            <p className="px-4 text-sm font-semibold text-neutral-900 mb-2">My Account</p>
+                            {user?.role === 'admin' && (
+                                <Link to="/admin" onClick={() => dispatch(toggleMobileMenu())} className="block px-4 py-3 text-neutral-900 font-medium hover:bg-neutral-50 rounded-xl">Dashboard</Link>
+                            )}
+                            <Link to="/profile" onClick={() => dispatch(toggleMobileMenu())} className="block px-4 py-3 text-neutral-900 font-medium hover:bg-neutral-50 rounded-xl">Profile</Link>
+                            <Link to="/orders" onClick={() => dispatch(toggleMobileMenu())} className="block px-4 py-3 text-neutral-900 font-medium hover:bg-neutral-50 rounded-xl">Orders</Link>
+                            <button
+                                onClick={() => {
+                                    dispatch(toggleMobileMenu());
+                                    dispatch(logoutUser());
+                                    navigate('/');
+                                }}
+                                className="w-full text-left px-4 py-3 text-red-600 font-medium hover:bg-red-50 rounded-xl"
+                            >
+                                Logout
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
