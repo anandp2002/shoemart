@@ -1,24 +1,43 @@
 import { useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { FiCheckCircle, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
 import { formatPrice } from '../utils/formatPrice';
+import { fetchOrderByPaymentIntent } from '../store/slices/orderSlice';
+import Loader from '../components/atoms/Loader';
 
 const Success = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [searchParams] = useSearchParams();
 
-    // Fallback logic if reached directly without state
-    const orderDetails = location.state?.orderDetails;
+    const { order: reduxOrder, loading } = useSelector((state) => state.orders);
+
+    // 1. Try to get from location state (internal navigation)
+    // 2. Fallback to redux order (fetched via thunk)
+    const orderDetails = location.state?.orderDetails || reduxOrder;
+
+    const paymentIntentId = searchParams.get('payment_intent');
 
     useEffect(() => {
-        // Automatically redirect to orders if no order details state (they refreshed or typed the URL)
-        if (!orderDetails) {
+        // If we don't have order details in state, but we have a payment intent in URL (Stripe redirect)
+        if (!location.state?.orderDetails && paymentIntentId) {
+            dispatch(fetchOrderByPaymentIntent(paymentIntentId));
+        }
+    }, [dispatch, paymentIntentId, location.state]);
+
+    useEffect(() => {
+        // Automatically redirect to orders if after 10s we still have nothing
+        if (!orderDetails && !loading && !paymentIntentId) {
             const timer = setTimeout(() => {
                 navigate('/orders');
-            }, 5000);
+            }, 10000);
             return () => clearTimeout(timer);
         }
-    }, [orderDetails, navigate]);
+    }, [orderDetails, loading, navigate, paymentIntentId]);
+
+    if (loading) return <Loader fullScreen message="Verifying your payment..." />;
 
     return (
         <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 py-12">
@@ -53,9 +72,9 @@ const Success = () => {
                     </div>
                 )}
 
-                {!orderDetails && (
+                {!orderDetails && !loading && (
                     <div className="bg-neutral-50/50 rounded-2xl p-4 mb-8">
-                        <p className="text-sm text-neutral-400">Redirecting to your orders...</p>
+                        <p className="text-sm text-neutral-400">Finalizing your order details...</p>
                     </div>
                 )}
 

@@ -96,6 +96,16 @@ class OrderService {
         return order;
     }
 
+    // Get order by payment intent ID
+    async getOrderByPaymentIntentId(paymentIntentId, userId) {
+        const order = await Order.findOne({
+            'paymentInfo.stripePaymentIntentId': paymentIntentId,
+            user: userId
+        }).populate('user', 'name email');
+
+        return order;
+    }
+
     // Update order status (admin)
     async updateOrderStatus(orderId, status) {
         const order = await Order.findById(orderId);

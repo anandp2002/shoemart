@@ -29,6 +29,15 @@ export const fetchOrderDetail = createAsyncThunk('orders/fetchDetail', async (id
     }
 });
 
+export const fetchOrderByPaymentIntent = createAsyncThunk('orders/fetchByPaymentIntent', async (paymentIntentId, { rejectWithValue }) => {
+    try {
+        const { data } = await API.get(`/orders/payment/${paymentIntentId}`);
+        return data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || 'Order not found');
+    }
+});
+
 const orderSlice = createSlice({
     name: 'orders',
     initialState: {
@@ -84,6 +93,17 @@ const orderSlice = createSlice({
                 state.order = action.payload.order;
             })
             .addCase(fetchOrderDetail.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchOrderByPaymentIntent.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchOrderByPaymentIntent.fulfilled, (state, action) => {
+                state.loading = false;
+                state.order = action.payload.order;
+            })
+            .addCase(fetchOrderByPaymentIntent.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

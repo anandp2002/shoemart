@@ -6,6 +6,7 @@ import {
     updateOrderStatus,
     getAllOrders,
     getOrderStats,
+    getOrderByPaymentIntent,
 } from '../controllers/orderController.js';
 import { protect } from '../middleware/auth.js';
 import { admin } from '../middleware/admin.js';
@@ -16,6 +17,7 @@ router.use(protect); // All order routes require auth
 
 router.post('/', createOrder);
 router.get('/me', getMyOrders);
+router.get('/payment/:paymentIntentId', getOrderByPaymentIntent);
 router.get('/stats', admin, getOrderStats);
 router.get('/:id', getOrder);
 

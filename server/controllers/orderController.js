@@ -34,10 +34,22 @@ export const getMyOrders = asyncHandler(async (req, res) => {
 });
 
 // @desc    Get single order
-// @route   GET /api/v1/orders/:id
 export const getOrder = asyncHandler(async (req, res) => {
     const isAdmin = req.user.role === 'admin';
     const order = await orderService.getOrderById(req.params.id, req.user._id, isAdmin);
+    res.json({ success: true, order });
+});
+
+// @desc    Get order by payment intent ID
+// @route   GET /api/v1/orders/payment/:paymentIntentId
+export const getOrderByPaymentIntent = asyncHandler(async (req, res) => {
+    const order = await orderService.getOrderByPaymentIntentId(req.params.paymentIntentId, req.user._id);
+
+    if (!order) {
+        res.status(404);
+        throw new Error('Order not found for this payment');
+    }
+
     res.json({ success: true, order });
 });
 
