@@ -1,11 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-<<<<<<< Updated upstream
     baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/v1` : 'https://shoemart-cngt.onrender.com/api/v1',
-=======
-    baseURL: '/api/v1',
->>>>>>> Stashed changes
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
