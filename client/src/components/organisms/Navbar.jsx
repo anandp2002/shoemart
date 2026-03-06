@@ -12,7 +12,7 @@ const Navbar = () => {
 
     const { isAuthenticated, user } = useSelector((state) => state.auth);
     const { totalItems } = useSelector((state) => state.cart);
-    const { isMobileMenuOpen } = useSelector((state) => state.ui);
+    const { mobileMenuOpen: isMobileMenuOpen } = useSelector((state) => state.ui);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [isScrolled, setIsScrolled] = useState(false);
