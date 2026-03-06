@@ -1,1 +1,105 @@
-import { useSelector } from 'react-redux'; import { FiUser, FiMail, FiPhone, FiPackage, FiHeart, FiSettings } from 'react-icons/fi'; import { Link } from 'react-router-dom'; const Profile = () => { const { user } = useSelector((state) => state.auth); if (!user) return null; return ( <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 "> <h1 className="font-sans text-2xl md:text-3xl font-bold mb-8">My Profile</h1> <div className="grid grid-cols-1 md:grid-cols-3 gap-6"> {/* Profile Card */} <div className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl rounded-2xl p-6 text-center"> <div className="w-24 h-24 rounded-full bg-amber-500 mx-auto flex items-center justify-center mb-4"> <span className="text-3xl font-bold text-neutral-900">{user.name?.charAt(0).toUpperCase()}</span> </div> <h2 className="font-sans font-bold text-xl">{user.name}</h2> <p className="text-neutral-400 text-sm">{user.email}</p> {user.phone && <p className="text-neutral-400 text-sm">{user.phone}</p>} <div className="mt-4"> <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${user.role === 'admin' ? 'bg-amber-100 text-amber-600' : 'bg-neutral-100 text-neutral-600'}`}> {user.role} </span> </div> </div> {/* Quick Links */} <div className="md:col-span-2 space-y-4"> <Link to="/orders" className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl rounded-xl p-5 flex items-center gap-4 hover:border-primary border-2 border-transparent transition-all"> <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"> <FiPackage className="w-5 h-5" /> </div> <div> <h3 className="font-semibold">My Orders</h3> <p className="text-sm text-neutral-400">Track, return, or buy things again</p> </div> </Link> <Link to="/wishlist" className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl rounded-xl p-5 flex items-center gap-4 hover:border-primary border-2 border-transparent transition-all"> <div className="w-12 h-12 rounded-xl bg-red-50 text-red-500 flex items-center justify-center"> <FiHeart className="w-5 h-5" /> </div> <div> <h3 className="font-semibold">Wishlist</h3> <p className="text-sm text-neutral-400">Your saved items</p> </div> </Link> {user.role === 'admin' && ( <Link to="/admin" className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl rounded-xl p-5 flex items-center gap-4 hover:border-primary border-2 border-transparent transition-all"> <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center"> <FiSettings className="w-5 h-5" /> </div> <div> <h3 className="font-semibold">Admin Dashboard</h3> <p className="text-sm text-neutral-400">Manage products, orders, and users</p> </div> </Link> )} </div> </div> </div> ); }; export default Profile; 
+import { useSelector } from "react-redux";
+import {
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiPackage,
+  FiHeart,
+  FiSettings,
+} from "react-icons/fi";
+import { Link } from "react-router-dom";
+const Profile = () => {
+  const { user } = useSelector((state) => state.auth);
+  if (!user) return null;
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 ">
+      {" "}
+      <h1 className="font-sans text-2xl md:text-3xl font-bold mb-8">
+        My Profile
+      </h1>{" "}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {" "}
+        {/* Profile Card */}{" "}
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl rounded-2xl p-6 text-center">
+          {" "}
+          <div className="w-24 h-24 rounded-full bg-amber-500 mx-auto flex items-center justify-center mb-4">
+            {" "}
+            <span className="text-3xl font-bold text-neutral-900">
+              {user.name?.charAt(0).toUpperCase()}
+            </span>{" "}
+          </div>{" "}
+          <h2 className="font-sans font-bold text-xl">{user.name}</h2>{" "}
+          <p className="text-neutral-400 text-sm">{user.email}</p>{" "}
+          {user.phone && (
+            <p className="text-neutral-400 text-sm">{user.phone}</p>
+          )}{" "}
+          <div className="mt-4">
+            {" "}
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${user.role === "admin" ? "bg-amber-100 text-amber-600" : "bg-neutral-100 text-neutral-600"}`}
+            >
+              {" "}
+              {user.role}{" "}
+            </span>{" "}
+          </div>{" "}
+        </div>{" "}
+        {/* Quick Links */}{" "}
+        <div className="md:col-span-2 space-y-4">
+          {" "}
+          <Link
+            to="/orders"
+            className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl rounded-xl p-5 flex items-center gap-4 hover:border-primary border-2 border-transparent transition-all"
+          >
+            {" "}
+            <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+              {" "}
+              <FiPackage className="w-5 h-5" />{" "}
+            </div>{" "}
+            <div>
+              {" "}
+              <h3 className="font-semibold">My Orders</h3>{" "}
+              <p className="text-sm text-neutral-400">
+                Track, return, or buy things again
+              </p>{" "}
+            </div>{" "}
+          </Link>{" "}
+          <Link
+            to="/wishlist"
+            className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl rounded-xl p-5 flex items-center gap-4 hover:border-primary border-2 border-transparent transition-all"
+          >
+            {" "}
+            <div className="w-12 h-12 rounded-xl bg-red-50 text-red-500 flex items-center justify-center">
+              {" "}
+              <FiHeart className="w-5 h-5" />{" "}
+            </div>{" "}
+            <div>
+              {" "}
+              <h3 className="font-semibold">Wishlist</h3>{" "}
+              <p className="text-sm text-neutral-400">Your saved items</p>{" "}
+            </div>{" "}
+          </Link>{" "}
+          {user.role === "admin" && (
+            <Link
+              to="/admin"
+              className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl rounded-xl p-5 flex items-center gap-4 hover:border-primary border-2 border-transparent transition-all"
+            >
+              {" "}
+              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center">
+                {" "}
+                <FiSettings className="w-5 h-5" />{" "}
+              </div>{" "}
+              <div>
+                {" "}
+                <h3 className="font-semibold">Admin Dashboard</h3>{" "}
+                <p className="text-sm text-neutral-400">
+                  Manage products, orders, and users
+                </p>{" "}
+              </div>{" "}
+            </Link>
+          )}{" "}
+        </div>{" "}
+      </div>{" "}
+    </div>
+  );
+};
+export default Profile;

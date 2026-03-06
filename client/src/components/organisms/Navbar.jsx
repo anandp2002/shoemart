@@ -73,6 +73,7 @@ const Navbar = () => {
                         <button
                             onClick={() => dispatch(toggleSearch())}
                             className="p-2 rounded-full text-neutral-900 hover:bg-neutral-100/50 transition-colors lg:hidden"
+                            aria-label="Toggle search"
                         >
                             <FiSearch className="text-xl" />
                         </button>
@@ -87,7 +88,7 @@ const Navbar = () => {
                         {/* User Menu */}
                         {isAuthenticated ? (
                             <div className="relative group">
-                                <button className="flex items-center space-x-2 p-2 rounded-full hover:bg-neutral-100/50 transition-colors text-neutral-900">
+                                <button className="flex items-center space-x-2 p-2 rounded-full hover:bg-neutral-100/50 transition-colors text-neutral-900" aria-label="User menu">
                                     <FiUser className="text-xl" />
                                 </button>
                                 {/* Dropdown */}
@@ -138,6 +139,8 @@ const Navbar = () => {
                         <button
                             onClick={() => dispatch(toggleMobileMenu())}
                             className="md:hidden p-2 rounded-full hover:bg-neutral-100/50 transition-colors text-neutral-900"
+                            aria-label="Toggle mobile menu"
+                            aria-expanded={isMobileMenuOpen}
                         >
                             {isMobileMenuOpen ? <FiX className="text-2xl" /> : <FiMenu className="text-2xl" />}
                         </button>
@@ -146,7 +149,7 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Navigation */}
-            <div className={`md:hidden absolute top-full left-0 w-full bg-white shadow-xl transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 opacity-100 border-t border-neutral-100' : 'max-h-0 opacity-0'}`}>
+            <div className={`md:hidden absolute top-full left-0 w-full bg-white shadow-xl transition-all duration-300 overflow-y-auto ${isMobileMenuOpen ? 'max-h-[80vh] opacity-100 border-t border-neutral-100' : 'max-h-0 opacity-0'}`}>
                 <div className="p-4 space-y-2">
                     <form onSubmit={handleSearch} className="mb-4">
                         <div className="relative">
