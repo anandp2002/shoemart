@@ -122,7 +122,7 @@ class ProductService {
         }
 
         product = await Product.findByIdAndUpdate(id, data, {
-            new: true,
+            returnDocument: 'after',
             runValidators: true,
         });
 

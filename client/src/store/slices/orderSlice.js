@@ -38,6 +38,25 @@ export const fetchOrderByPaymentIntent = createAsyncThunk('orders/fetchByPayment
     }
 });
 
+export const fetchAllOrders = createAsyncThunk('orders/fetchAll', async (params = {}, { rejectWithValue }) => {
+    try {
+        const queryString = new URLSearchParams(params).toString();
+        const { data } = await API.get(`/orders?${queryString}`);
+        return data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to fetch orders');
+    }
+});
+
+export const updateOrderStatus = createAsyncThunk('orders/updateStatus', async ({ id, status }, { rejectWithValue }) => {
+    try {
+        const { data } = await API.put(`/orders/${id}`, { status });
+        return data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to update order status');
+    }
+});
+
 const orderSlice = createSlice({
     name: 'orders',
     initialState: {
@@ -106,6 +125,26 @@ const orderSlice = createSlice({
             .addCase(fetchOrderByPaymentIntent.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            .addCase(fetchAllOrders.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchAllOrders.fulfilled, (state, action) => {
+                state.loading = false;
+                state.orders = action.payload.orders;
+                state.total = action.payload.total;
+                state.totalPages = action.payload.totalPages;
+            })
+            .addCase(fetchAllOrders.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(updateOrderStatus.fulfilled, (state, action) => {
+                const index = state.orders.findIndex(o => o._id === action.payload.order._id);
+                if (index !== -1) {
+                    state.orders[index] = action.payload.order;
+                }
+                state.order = action.payload.order;
             });
     },
 });

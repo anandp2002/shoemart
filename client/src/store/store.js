@@ -4,6 +4,8 @@ import productReducer from './slices/productSlice';
 import cartReducer from './slices/cartSlice';
 import orderReducer from './slices/orderSlice';
 import uiReducer from './slices/uiSlice';
+import userReducer from './slices/userSlice';
+import wishlistReducer from './slices/wishlistSlice';
 
 const store = configureStore({
     reducer: {
@@ -12,6 +14,8 @@ const store = configureStore({
         cart: cartReducer,
         orders: orderReducer,
         ui: uiReducer,
+        users: userReducer,
+        wishlist: wishlistReducer,
     },
     devTools: import.meta.env.DEV,
 });

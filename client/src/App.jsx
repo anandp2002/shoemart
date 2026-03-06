@@ -17,10 +17,85 @@ import OrderDetail from './pages/OrderDetail';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Success from './pages/Success';
+import Wishlist from './pages/Wishlist';
 import PaymentError from './pages/PaymentError';
-import AdminDashboard from './pages/admin/Dashboard'; import Loader from './components/atoms/Loader'; // Protected Route Component
+import AdminDashboard from './pages/admin/Dashboard';
+import ProductList from './pages/admin/ProductList';
+import ProductForm from './pages/admin/ProductForm';
+import OrderList from './pages/admin/OrderList';
+import UserList from './pages/admin/UserList';
+import Loader from './components/atoms/Loader';
+
+// Protected Route Component
 const ProtectedRoute = ({ children, adminOnly = false }) => {
-    const { isAuthenticated, user, loading } = useSelector((state) => state.auth); if (loading) return <Loader fullScreen />; if (!isAuthenticated) return <Navigate to="/login" replace />; if (adminOnly && user?.role !== 'admin') return <Navigate to="/" replace />; return children;
-}; function App() {
-    const dispatch = useDispatch(); const { token } = useSelector((state) => state.auth); useEffect(() => { if (token) { dispatch(loadUser()); dispatch(fetchCart()); } }, [dispatch, token]); return (<> <Toaster position="top-center" toastOptions={{ duration: 3000, style: { background: '#0a0a0a', color: '#fff', borderRadius: '12px', padding: '12px 20px', fontSize: '14px', }, success: { iconTheme: { primary: '#f59e0b', secondary: '#000' } }, error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } }, }} /> <Routes> <Route element={<MainLayout />}> {/* Public Routes */} <Route path="/" element={<Home />} /> <Route path="/shop" element={<Shop />} /> <Route path="/product/:id" element={<ProductDetail />} /> <Route path="/cart" element={<Cart />} /> <Route path="/login" element={<Login />} /> <Route path="/register" element={<Register />} /> {/* Protected Routes */} <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} /> <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} /> <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} /> <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} /> <Route path="/success" element={<ProtectedRoute><Success /></ProtectedRoute>} /> <Route path="/payment-error" element={<ProtectedRoute><PaymentError /></ProtectedRoute>} /> {/* Admin Routes */} <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} /> {/* 404 */} <Route path="*" element={<NotFound />} /> </Route> </Routes> </>);
-} export default App;
+    const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
+    if (loading) return <Loader fullScreen />;
+    if (!isAuthenticated) return <Navigate to="/login" replace />;
+    if (adminOnly && user?.role !== 'admin') return <Navigate to="/" replace />;
+    return children;
+};
+
+function App() {
+    const dispatch = useDispatch();
+    const { token } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+        if (token) {
+            dispatch(loadUser());
+            dispatch(fetchCart());
+        }
+    }, [dispatch, token]);
+
+    return (
+        <>
+            <Toaster
+                position="top-center"
+                toastOptions={{
+                    duration: 3000,
+                    style: {
+                        background: '#0a0a0a',
+                        color: '#fff',
+                        borderRadius: '12px',
+                        padding: '12px 20px',
+                        fontSize: '14px',
+                    },
+                    success: { iconTheme: { primary: '#f59e0b', secondary: '#000' } },
+                    error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+                }}
+            />
+            <Routes>
+                <Route element={<MainLayout />}>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/shop" element={<Shop />} />
+                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+
+                    {/* Protected Routes */}
+                    <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+                    <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+                    <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
+                    <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                    <Route path="/success" element={<ProtectedRoute><Success /></ProtectedRoute>} />
+                    <Route path="/payment-error" element={<ProtectedRoute><PaymentError /></ProtectedRoute>} />
+
+                    {/* Admin Routes */}
+                    <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
+                    <Route path="/admin/products" element={<ProtectedRoute adminOnly><ProductList /></ProtectedRoute>} />
+                    <Route path="/admin/products/new" element={<ProtectedRoute adminOnly><ProductForm /></ProtectedRoute>} />
+                    <Route path="/admin/products/edit/:id" element={<ProtectedRoute adminOnly><ProductForm /></ProtectedRoute>} />
+                    <Route path="/admin/orders" element={<ProtectedRoute adminOnly><OrderList /></ProtectedRoute>} />
+                    <Route path="/admin/users" element={<ProtectedRoute adminOnly><UserList /></ProtectedRoute>} />
+
+                    {/* 404 */}
+                    <Route path="*" element={<NotFound />} />
+                </Route>
+            </Routes>
+        </>
+    );
+}
+
+export default App;

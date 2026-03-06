@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema(
             public_id: String,
             url: {
                 type: String,
-                default: 'https://res.cloudinary.com/demo/image/upload/v1/defaults/avatar.png',
+                default: 'https://ui-avatars.com/api/?name=User&background=random',
             },
         },
         role: {

@@ -10,9 +10,11 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { isAuthenticated, user } = useSelector((state) => state.auth);
     const { totalItems } = useSelector((state) => state.cart);
-    const { mobileMenuOpen: isMobileMenuOpen } = useSelector((state) => state.ui);
+    const { user, isAuthenticated } = useSelector((state) => state.auth);
+    const { mobileMenuOpen: isMobileMenuOpen, searchOpen: isSearchOpen } = useSelector((state) => state.ui);
+
+    const wishlistCount = user?.wishlist?.length || 0;
 
     const [searchQuery, setSearchQuery] = useState('');
     const [isScrolled, setIsScrolled] = useState(false);
@@ -78,10 +80,15 @@ const Navbar = () => {
                             <FiSearch className="text-xl" />
                         </button>
 
-                        {/* Wishlist Placeholder for Alignment */}
+                        {/* Wishlist Link */}
                         {isAuthenticated && (
                             <Link to="/wishlist" className="hidden md:flex p-2 hover:bg-neutral-100 rounded-full transition-colors relative text-neutral-900">
                                 <FiHeart className="text-xl" />
+                                {wishlistCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white min-w-[20px] h-[20px] flex items-center justify-center rounded-full text-[10px] font-bold px-1 ring-2 ring-white">
+                                        {wishlistCount > 99 ? '99+' : wishlistCount}
+                                    </span>
+                                )}
                             </Link>
                         )}
 

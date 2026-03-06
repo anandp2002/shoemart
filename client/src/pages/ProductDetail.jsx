@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   FiShoppingBag,
@@ -15,6 +15,7 @@ import {
   clearProductDetail,
 } from "../store/slices/productSlice";
 import { addToCart } from "../store/slices/cartSlice";
+import { toggleWishlist } from "../store/slices/wishlistSlice";
 import Rating from "../components/atoms/Rating";
 import Loader from "../components/atoms/Loader";
 import { formatPrice, getDiscountPercent } from "../utils/formatPrice";
@@ -23,11 +24,18 @@ import toast from "react-hot-toast";
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { product, detailLoading } = useSelector((state) => state.products);
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { togglingId } = useSelector((state) => state.wishlist);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+
+  const isWishlisted = user?.wishlist?.some(
+    (item) => (typeof item === 'object' ? item._id : item) === id
+  );
+  const isTogglingWishlist = togglingId === id;
   useEffect(() => {
     dispatch(fetchProductDetail(id));
     return () => dispatch(clearProductDetail());
@@ -55,6 +63,20 @@ const ProductDetail = () => {
       `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`,
       "_blank",
     );
+  };
+
+  const handleWishlistToggle = () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to add to wishlist');
+      navigate('/login');
+      return;
+    }
+    dispatch(toggleWishlist(id))
+      .unwrap()
+      .then(() => {
+        toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+      })
+      .catch((err) => toast.error(err));
   };
   if (detailLoading) return <Loader fullScreen />;
   if (!product)
@@ -225,9 +247,22 @@ const ProductDetail = () => {
                 {" "}
                 <FiShoppingBag /> Add to Cart{" "}
               </button>{" "}
-              <button className="bg-transparent text-neutral-900 font-semibold px-6 py-3 rounded-xl border-2 border-neutral-900 hover:bg-neutral-900 hover:text-white transition-all duration-300 active:scale-95 py-4 !px-6">
-                {" "}
-                <FiHeart className="w-5 h-5" />{" "}
+              <button
+                onClick={handleWishlistToggle}
+                disabled={isTogglingWishlist}
+                className={`font-semibold px-6 py-3 rounded-xl border-2 transition-all duration-300 active:scale-95 py-4 !px-6 disabled:opacity-50 ${isWishlisted
+                  ? 'bg-red-500 border-red-500 text-white hover:bg-red-600'
+                  : 'bg-transparent border-neutral-900 text-neutral-900 hover:bg-neutral-900 hover:text-white'
+                  }`}
+              >
+                {isTogglingWishlist ? (
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                ) : (
+                  <FiHeart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
+                )}
               </button>{" "}
               <button
                 onClick={handleShare}

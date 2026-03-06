@@ -63,7 +63,7 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 1000, // Increased for development
+    max: 2000, // Increased for development
     message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 app.use('/api', limiter);

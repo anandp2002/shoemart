@@ -25,7 +25,7 @@ class AuthService {
             throw error;
         }
 
-        const user = await User.findOne({ email }).select('+password');
+        const user = await User.findOne({ email }).select('+password').populate('wishlist', 'name price images brand mrp ratings stock');
         if (!user) {
             const error = new Error('Invalid email or password');
             error.statusCode = 401;
@@ -44,7 +44,7 @@ class AuthService {
 
     // Get user profile
     async getProfile(userId) {
-        const user = await User.findById(userId).populate('wishlist', 'name price images');
+        const user = await User.findById(userId).populate('wishlist', 'name price images brand mrp ratings sizes');
         if (!user) {
             const error = new Error('User not found');
             error.statusCode = 404;

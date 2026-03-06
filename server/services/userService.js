@@ -119,6 +119,7 @@ class UserService {
         }
 
         await user.save();
+        await user.populate('wishlist', 'name price images brand mrp ratings sizes');
         return user.wishlist;
     }
 
@@ -140,7 +141,7 @@ class UserService {
         const user = await User.findByIdAndUpdate(
             userId,
             { role },
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
         if (!user) {
             const error = new Error('User not found');

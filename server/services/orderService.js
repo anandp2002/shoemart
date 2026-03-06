@@ -1,6 +1,7 @@
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
 import Product from '../models/Product.js';
+import User from '../models/User.js';
 import sendEmail from '../utils/sendEmail.js';
 
 class OrderService {
@@ -172,6 +173,9 @@ class OrderService {
     // Get order stats (admin)
     async getOrderStats() {
         const totalOrders = await Order.countDocuments();
+        const totalProducts = await Product.countDocuments();
+        const totalUsers = await User.countDocuments();
+
         const totalRevenue = await Order.aggregate([
             { $match: { 'paymentInfo.status': 'paid' } },
             { $group: { _id: null, total: { $sum: '$totalPrice' } } },
@@ -188,6 +192,8 @@ class OrderService {
 
         return {
             totalOrders,
+            totalProducts,
+            totalUsers,
             totalRevenue: totalRevenue[0]?.total || 0,
             ordersByStatus,
             recentOrders,

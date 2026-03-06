@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api/axios';
+import { toggleWishlist } from './wishlistSlice';
 
 // Thunks
 export const loginUser = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
@@ -117,6 +118,12 @@ const authSlice = createSlice({
             // Update Profile
             .addCase(updateProfile.fulfilled, (state, action) => {
                 state.user = action.payload.user;
+            })
+            // Wishlist Toggle (cross-slice)
+            .addCase(toggleWishlist.fulfilled, (state, action) => {
+                if (state.user) {
+                    state.user.wishlist = action.payload.wishlist;
+                }
             });
     },
 });
