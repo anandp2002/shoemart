@@ -7,10 +7,9 @@ const router = express.Router();
 router.get('/config', getStripeConfig);
 router.post('/create-intent', protect, createPaymentIntent);
 
-// Webhook needs raw body, so we handle it specially
+// Webhook needs raw body, so we handle it specially (already parsed in server.js)
 router.post(
     '/webhook',
-    express.raw({ type: 'application/json' }),
     handleWebhook
 );
 
