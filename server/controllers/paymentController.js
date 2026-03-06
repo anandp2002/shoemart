@@ -4,7 +4,7 @@ import paymentService from '../services/paymentService.js';
 // @desc    Create payment intent
 // @route   POST /api/v1/payment/create-intent
 export const createPaymentIntent = asyncHandler(async (req, res) => {
-    const { amount } = req.body;
+    const { amount, shippingAddress } = req.body;
 
     if (!amount || amount <= 0) {
         res.status(400);
@@ -13,6 +13,7 @@ export const createPaymentIntent = asyncHandler(async (req, res) => {
 
     const result = await paymentService.createPaymentIntent(amount, 'inr', {
         userId: req.user._id.toString(),
+        shippingAddress: JSON.stringify(shippingAddress),
     });
 
     res.json({ success: true, ...result });

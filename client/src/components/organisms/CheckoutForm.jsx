@@ -23,7 +23,7 @@ const CheckoutForm = ({ grandTotal, address, onBack }) => {
         const { error, paymentIntent } = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: `${window.location.origin}/orders`,
+                return_url: `${window.location.origin}/success`,
                 payment_method_data: {
                     billing_details: {
                         name: 'Customer', // Use user name if available

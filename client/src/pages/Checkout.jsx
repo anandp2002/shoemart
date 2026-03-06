@@ -48,7 +48,10 @@ const Checkout = () => {
             }
 
             // 2. Create PaymentIntent
-            const { data: intentData } = await API.post('/payment/create-intent', { amount: grandTotal });
+            const { data: intentData } = await API.post('/payment/create-intent', {
+                amount: grandTotal,
+                shippingAddress: address
+            });
             setClientSecret(intentData.clientSecret);
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to initialize payment gateway");
