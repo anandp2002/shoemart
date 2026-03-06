@@ -53,25 +53,13 @@ const allowedOrigins = [
     'http://localhost:5174',
     'https://shoemart-navy.vercel.app',
     process.env.CLIENT_URL,
-].filter(Boolean);
+]
+    .filter(Boolean)
+    .map((url) => (url.endsWith('/') ? url.slice(0, -1) : url));
 
 app.use(
     cors({
-        origin: function (origin, callback) {
-            // Allow requests with no origin (like mobile apps or curl requests)
-            if (!origin) return callback(null, true);
-
-            // Check if origin is allowed, ignoring trailing slashes
-            const isAllowed = allowedOrigins.some(allowed =>
-                origin === allowed || origin === allowed + '/' || allowed === origin + '/'
-            );
-
-            if (isAllowed) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
+        origin: allowedOrigins,
         credentials: true,
     })
 );
