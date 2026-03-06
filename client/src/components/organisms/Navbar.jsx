@@ -82,7 +82,7 @@ const Navbar = () => {
 
                         {/* Wishlist Link */}
                         {isAuthenticated && (
-                            <Link to="/wishlist" className="hidden md:flex p-2 hover:bg-neutral-100 rounded-full transition-colors relative text-neutral-900">
+                            <Link to="/wishlist" className="flex p-2 hover:bg-neutral-100 rounded-full transition-colors relative text-neutral-900">
                                 <FiHeart className="text-xl" />
                                 {wishlistCount > 0 && (
                                     <span className="absolute -top-1 -right-1 bg-red-500 text-white min-w-[20px] h-[20px] flex items-center justify-center rounded-full text-[10px] font-bold px-1 ring-2 ring-white">
