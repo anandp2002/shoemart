@@ -37,7 +37,7 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
 
 function App() {
     const dispatch = useDispatch();
-    const { token } = useSelector((state) => state.auth);
+    const { token, loading, isAuthenticated } = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (token) {
@@ -45,6 +45,10 @@ function App() {
             dispatch(fetchCart());
         }
     }, [dispatch, token]);
+
+    if (loading && !isAuthenticated) {
+        return <Loader fullScreen />;
+    }
 
     return (
         <>
