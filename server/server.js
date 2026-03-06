@@ -63,10 +63,10 @@ app.use(
             // Allow requests with no origin (like mobile apps/postman)
             if (!origin) return callback(null, true);
 
-            // Check if it's one of our allowed origins (ignoring trailing slashes)
-            const isAllowed = allowedOrigins.some(allowed =>
-                origin === allowed || origin === allowed + '/' || allowed === origin + '/'
-            );
+            // Check if it's one of our allowed origins (ignoring trailing slashes) or a Vercel preview URL
+            const isAllowed =
+                allowedOrigins.some((allowed) => origin === allowed || origin === allowed + '/' || allowed === origin + '/') ||
+                (origin && origin.endsWith('.vercel.app'));
 
             if (isAllowed) {
                 // IMPORTANT: Reflect the EXACT origin requested to prevent caching mismatches on Render/Vercel
