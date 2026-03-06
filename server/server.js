@@ -29,24 +29,6 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Security middleware
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-
-// Rate limiting
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100,
-    message: 'Too many requests from this IP, please try again after 15 minutes',
-});
-app.use('/api', limiter);
-
-// Body parser
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
-// Cookie parser
-app.use(cookieParser());
-
 // CORS
 const allowedOrigins = [
     'http://localhost:5173',
@@ -60,16 +42,12 @@ const allowedOrigins = [
 app.use(
     cors({
         origin: function (origin, callback) {
-            // Allow requests with no origin (like mobile apps/postman)
             if (!origin) return callback(null, true);
-
-            // Check if it's one of our allowed origins (ignoring trailing slashes) or a Vercel preview URL
             const isAllowed =
                 allowedOrigins.some((allowed) => origin === allowed || origin === allowed + '/' || allowed === origin + '/') ||
                 (origin && origin.endsWith('.vercel.app'));
 
             if (isAllowed) {
-                // IMPORTANT: Reflect the EXACT origin requested to prevent caching mismatches on Render/Vercel
                 callback(null, origin);
             } else {
                 callback(new Error('CORS policy violation'));
@@ -78,6 +56,28 @@ app.use(
         credentials: true,
     })
 );
+
+// Security middleware
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+
+// Rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 1000, // Increased for development
+    message: 'Too many requests from this IP, please try again after 15 minutes',
+});
+app.use('/api', limiter);
+
+// Next we need the raw body for Stripe Webhooks BEFORE express.json() parses it into an object
+app.use('/api/v1/payment/webhook', express.raw({ type: 'application/json' }));
+
+// Body parser
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Cookie parser
+app.use(cookieParser());
+
 
 // API Routes
 app.use('/api/v1/auth', authRoutes);
